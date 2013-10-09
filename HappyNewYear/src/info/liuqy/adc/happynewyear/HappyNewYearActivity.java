@@ -134,9 +134,15 @@ public class HappyNewYearActivity extends Activity {
 					while (notes.moveToNext()) {
 						String noteinfo = notes.getString(notes  
                                 .getColumnIndex(Note.NOTE));
-						String[] fragments = noteinfo.toUpperCase().split(","); //FIXME better regex?
+						
+						//FIXME better regex?
+						String[] fragments = noteinfo.toUpperCase().split(",");
 						for (String attr : fragments) {
-							attrs.add(attr);
+							//remove blank spaces.
+							String temp = attr.trim();
+							if (null!=temp && 0 < temp.length() ) {
+							      attrs.add(temp);
+							}
 						}
 					}
 					
@@ -197,7 +203,7 @@ public class HappyNewYearActivity extends Activity {
 			}
 		}
 		
-		// TODO: the codes use tricky pattern to check if it is for chinese mobile.
+		// FIXME: the codes use tricky pattern to check if it is for Chinese mobile.
 		//return false;
 		return true;
 	}

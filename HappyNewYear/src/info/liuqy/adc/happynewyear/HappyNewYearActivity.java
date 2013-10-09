@@ -197,7 +197,9 @@ public class HappyNewYearActivity extends Activity {
 			}
 		}
 		
-		return false;
+		// TODO: the codes use tricky pattern to check if it is for chinese mobile.
+		//return false;
+		return true;
 	}
 
     public static final String SENDLIST = "info.liuqy.adc.happynewyear.SENDLIST";

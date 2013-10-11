@@ -59,7 +59,7 @@ public class HappyNewYearActivity extends Activity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.main);
+		setContentView(R.layout.main);  //TODO: design hints: check the layout. "separator" is also view.
 	}
 
 	/**
@@ -112,9 +112,9 @@ public class HappyNewYearActivity extends Activity {
 
 				Cursor nicknames = getContentResolver().query(
 						Data.CONTENT_URI,
-						new String[] { Data._ID, Nickname.NAME },
+						new String[] { Data._ID, Nickname.NAME },              //TODO: this could be a common variable.
 						Data.CONTACT_ID + "=?" + " AND " + Data.MIMETYPE + "='"
-								+ Nickname.CONTENT_ITEM_TYPE + "'",
+								+ Nickname.CONTENT_ITEM_TYPE + "'",              //TODO: also a common variable.
 						new String[] { contactId }, null);
 
 				// only process contacts with nickname (the first one)

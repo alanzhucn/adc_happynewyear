@@ -40,6 +40,19 @@ public class ContactHelper {
 				return super.toString();
 			}
 		}
+		
+		public static Market fromString (String data) {
+			
+			if ("NC".equalsIgnoreCase(data)) {
+				return NORTH;
+			}
+			
+			if ("SC".equalsIgnoreCase(data)) {
+				return SOUTH;
+			}
+			
+			return ANY;
+		}
 	};
 
 	enum Language {
@@ -56,6 +69,19 @@ public class ContactHelper {
 			default:
 				return super.toString();
 			}
+		}
+		
+		public static Language fromString (String data) {
+			
+			if ("CN".equalsIgnoreCase(data)) {
+				return CHINESE;
+			}
+			
+			if ("EN".equalsIgnoreCase(data)) {
+				return ENGLISH;
+			}
+			
+			return ANY;
 		}
 	};
 

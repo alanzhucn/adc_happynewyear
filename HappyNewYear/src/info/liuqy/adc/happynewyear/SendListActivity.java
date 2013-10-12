@@ -1,5 +1,7 @@
 package info.liuqy.adc.happynewyear;
 
+
+
 import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.List;
@@ -23,6 +25,11 @@ import android.telephony.SmsManager;
 import android.view.View;
 import android.widget.SimpleAdapter;
 import android.widget.Toast;
+
+//internal import
+import info.liuqy.adc.happynewyear.ContactHelper.Language;
+import info.liuqy.adc.happynewyear.ContactHelper.Market;
+
 
 public class SendListActivity extends ListActivity {
 	
@@ -77,10 +84,17 @@ public class SendListActivity extends ListActivity {
 	public void handleIntent() {
         Bundle data = this.getIntent().getExtras();
         if (data != null) {
-            Bundle sendlist = data.getParcelable(HappyNewYearActivity.SENDLIST);
+            //Bundle sendlist = data.getParcelable(HappyNewYearActivity.SENDLIST);
             
             String cc = data.getString(HappyNewYearActivity.CUSTOMER_CARER);
             String tmpl = data.getString(HappyNewYearActivity.SMS_TEMPLATE);
+            
+                        
+            String targetLanguage = data.getString(HappyNewYearActivity.TARGET_LANGUAGE);
+            String targetMarket = data.getString(HappyNewYearActivity.TARGET_MARKET);
+
+            Bundle sendlist = ContactHelper.readContacts(Market.fromString(targetMarket), 
+            	 	                            Language.fromString(targetLanguage), this);
             
             tmpl = tmpl.replaceAll("\\{FROM\\}", cc);
             

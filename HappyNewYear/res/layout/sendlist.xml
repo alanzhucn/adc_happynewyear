@@ -18,8 +18,10 @@
             android:divider="#FFF"
             android:dividerHeight="1dp">
         </ListView>
+            <!-- android:id="@+id/default_send" -->
+        
         <TextView
-            android:id="@android:id/empty"
+            android:id = "@android:id/empty"
             android:layout_marginLeft="@dimen/space1"
             android:text="@string/no_name" />
     </LinearLayout>

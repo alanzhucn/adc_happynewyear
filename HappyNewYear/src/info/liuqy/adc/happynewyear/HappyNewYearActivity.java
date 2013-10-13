@@ -3,26 +3,22 @@ package info.liuqy.adc.happynewyear;
 import info.liuqy.adc.happynewyear.ContactHelper.Language;
 import info.liuqy.adc.happynewyear.ContactHelper.Market;
 
-import java.util.HashSet;
-import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import android.app.Activity;
 import android.content.Intent;
-import android.database.Cursor;
 import android.os.Bundle;
-import android.provider.ContactsContract;
-import android.provider.ContactsContract.CommonDataKinds.Nickname;
-import android.provider.ContactsContract.CommonDataKinds.Note;
-import android.provider.ContactsContract.CommonDataKinds.Phone;
-import android.provider.ContactsContract.Contacts;
-import android.provider.ContactsContract.Data;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
 
+/**
+ * 
+ * read-me:
+ *     v0.5 2013-10-13 the textview in SendListActivity.java is hidden after update the List.
+ *                 when we set it to sendlist.xml
+ *                             android:id = "@android:id/empty"
+ *                 so it is caused by id.  
+ */
 public class HappyNewYearActivity extends Activity {
 
 	/** Called when the activity is first created. */
@@ -40,6 +36,10 @@ public class HappyNewYearActivity extends Activity {
     public static final String TARGET_LANGUAGE = "info.liuqy.adc.happynewyear.TARGET_LANGUAGE";
     public static final String CUSTOMER_CARER = "info.liuqy.adc.happynewyear.CUSTOMER_CARER";
     public static final String SMS_TEMPLATE = "info.liuqy.adc.happynewyear.SMS_TEMPLATE";   
+    
+    public static final String SEND_LIST =  "info.liuqy.adc.happynewyear.SENDER_LIST";
+    public static final String SEND_LIST_PARMS = "info.liuqy.adc.happynewyear.SENDER_LIST_PARMS";
+    
 
     public void genSendlist(View v) {
         RadioGroup rg = (RadioGroup)this.findViewById(R.id.customer_group);

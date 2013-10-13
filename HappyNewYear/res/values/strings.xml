@@ -12,6 +12,7 @@
     <string name="gen_sendlist">生成拟发送列表</string>
     <string name="sendlist">拟发送以下客户：</string>
     <string name="no_name">没有待发送客户</string>
+    <string name="progress">准备发送列表中: </string>
     <string name="send">立即发送</string>
     <string name="template1">{TO}，{FROM}给您拜年了！</string>
 </resources>

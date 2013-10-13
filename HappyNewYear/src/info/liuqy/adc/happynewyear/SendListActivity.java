@@ -20,18 +20,23 @@ import android.content.IntentFilter;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.telephony.SmsManager;
+import android.util.Log;
 import android.view.View;
 import android.widget.SimpleAdapter;
+import android.widget.TextView;
 import android.widget.Toast;
 
 //internal import
 import info.liuqy.adc.happynewyear.ContactHelper.Language;
-import info.liuqy.adc.happynewyear.ContactHelper.Market;
+import info.liuqy.adc.happynewyear.ContactHelper.Market;;
 
 
 public class SendListActivity extends ListActivity {
+	
+    static final boolean SOC_GEN_PROGRESS = false;
 	
     static final String KEY_TO = "TO";
     static final String KEY_SMS = "SMS";
@@ -81,31 +86,113 @@ public class SendListActivity extends ListActivity {
             loadFromDatabase();
     }
 	
-	public void handleIntent() {
-        Bundle data = this.getIntent().getExtras();
-        if (data != null) {
-            //Bundle sendlist = data.getParcelable(HappyNewYearActivity.SENDLIST);
-            
-            String cc = data.getString(HappyNewYearActivity.CUSTOMER_CARER);
-            String tmpl = data.getString(HappyNewYearActivity.SMS_TEMPLATE);
-            
-                        
-            String targetLanguage = data.getString(HappyNewYearActivity.TARGET_LANGUAGE);
-            String targetMarket = data.getString(HappyNewYearActivity.TARGET_MARKET);
+	 private class GenSendListTask extends AsyncTask<Bundle, Integer, Bundle> {
+	     protected Bundle doInBackground(Bundle... datas) {
+	    	 Log.i("GenSendListTask", "doInBackground");
+	    	 
+	    	 
+	    	 int count = datas.length;
+	         
+	         if (1!=count) {
+	        	 return null;
+	         }
+	         
+	         Bundle data = datas[0];
+	         
+	         //Bundle sendlist = data.getParcelable(HappyNewYearActivity.SENDLIST);
+	         if (null == data) {
+	        	 return null;
+	         }
+	         
+	         
+	         String cc = data.getString(HappyNewYearActivity.CUSTOMER_CARER);
+	         String tmpl = data.getString(HappyNewYearActivity.SMS_TEMPLATE);
+	             
+	                         
+	         String targetLanguage = data.getString(HappyNewYearActivity.TARGET_LANGUAGE);
+	         String targetMarket = data.getString(HappyNewYearActivity.TARGET_MARKET);
 
-            Bundle sendlist = ContactHelper.readContacts(Market.fromString(targetMarket), 
-            	 	                            Language.fromString(targetLanguage), this);
-            
-            tmpl = tmpl.replaceAll("\\{FROM\\}", cc);
-            
-            for (String n : sendlist.keySet()) {
-                String sms = tmpl.replaceAll("\\{TO\\}", sendlist.getString(n));
-                Map<String, String> rec = new Hashtable<String, String>();
-                rec.put(KEY_TO, n);
-                rec.put(KEY_SMS, sms);
-                smslist.add(rec);
-                adapter.notifyDataSetChanged();
-            }
+	         publishProgress (0);
+	         
+	         Bundle sendlist = ContactHelper.readContacts(Market.fromString(targetMarket), 
+	             	 	                   Language.fromString(targetLanguage), SendListActivity.this);
+	             
+	         // publishProgress((int) ((i / (float) count) * 100));
+	         // Escape early if cancel() is called
+	         // if (isCancelled()) break;
+	        
+	         Bundle result = new Bundle();
+	         result.putBundle(HappyNewYearActivity.SEND_LIST, sendlist);
+	         result.putBundle(HappyNewYearActivity.SEND_LIST_PARMS, data);
+	         
+	         publishProgress (100);
+	         
+	         return result;
+	         
+	     }
+
+	     // Called in UI thread
+	     protected void onProgressUpdate(Integer... progress) {
+	    	 
+	    	 //TODO: display a "cycle progress"..
+	    	 Log.i("GenSendListTask", "onProgressUpdate");
+	    	 
+	    	 String progressStr = SendListActivity.this.getString(R.string.progress) 
+	    			                  + progress[0].toString() + "%";
+	    	 if (SOC_GEN_PROGRESS) {
+	    	    // TextView view = (TextView) SendListActivity.this.findViewById(R.id.default_send);
+	    	    // view.setText(progressStr);
+	    	 }
+	    	 
+	         Toast.makeText(SendListActivity.this, "Progress " + progress[0].toString() + "%", 
+	        		        Toast.LENGTH_SHORT).show();
+	     }
+
+         // Called in UI thread
+	     protected void onPostExecute(Bundle result) {
+
+	    	    Log.i("GenSendListTask", "onPostExecute");
+	    	 
+	    	    //TODO: validate parms.
+	    	    //      read bundle..
+	    	 
+	    	    //TODO: why we need to do following?
+	    	    // hide the default view.
+	    	    //TextView view = (TextView) SendListActivity.this.findViewById(R.id.default_send);
+	    	    //view.setVisibility(TRIM_MEMORY_UI_HIDDEN);
+	    	 
+	    	    
+	    	    
+	            Bundle sendlist = result.getBundle(HappyNewYearActivity.SEND_LIST);
+	            Bundle data = result.getBundle(HappyNewYearActivity.SEND_LIST_PARMS);
+	            
+	            String cc = data.getString(HappyNewYearActivity.CUSTOMER_CARER);
+	            
+	            String tmpl = data.getString(HappyNewYearActivity.SMS_TEMPLATE);
+	            
+	            	            
+	            tmpl = tmpl.replaceAll("\\{FROM\\}", cc);
+	            
+	            for (String n : sendlist.keySet()) {
+	                String sms = tmpl.replaceAll("\\{TO\\}", sendlist.getString(n));
+	                Map<String, String> rec = new Hashtable<String, String>();
+	                rec.put(KEY_TO, n);
+	                rec.put(KEY_SMS, sms);
+	                smslist.add(rec);
+	                adapter.notifyDataSetChanged();
+	            }
+	            
+	            //TODO: only enable button after list is updated.
+	     }
+	 }
+	 
+	public void handleIntent() {
+        
+		Bundle data = this.getIntent().getExtras();
+        
+        if (data != null) {
+        	
+        	new GenSendListTask().execute(data);
         }
 
 	}

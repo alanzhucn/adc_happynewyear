@@ -14,6 +14,9 @@ import android.widget.Spinner;
 /**
  * 
  * read-me:
+ *     v0.6 2013-10-13 change the textview to use non empty id to show progress.
+ *                      sendlist.xml
+ *                 
  *     v0.5 2013-10-13 the textview in SendListActivity.java is hidden after update the List.
  *                 when we set it to sendlist.xml
  *                             android:id = "@android:id/empty"

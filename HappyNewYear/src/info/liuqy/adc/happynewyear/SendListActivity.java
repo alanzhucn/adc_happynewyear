@@ -35,9 +35,7 @@ import info.liuqy.adc.happynewyear.ContactHelper.Market;;
 
 
 public class SendListActivity extends ListActivity {
-	
-    static final boolean SOC_GEN_PROGRESS = false;
-	
+		
     static final String KEY_TO = "TO";
     static final String KEY_SMS = "SMS";
 
@@ -139,10 +137,8 @@ public class SendListActivity extends ListActivity {
 	    	 
 	    	 String progressStr = SendListActivity.this.getString(R.string.progress) 
 	    			                  + progress[0].toString() + "%";
-	    	 if (SOC_GEN_PROGRESS) {
-	    	    // TextView view = (TextView) SendListActivity.this.findViewById(R.id.default_send);
-	    	    // view.setText(progressStr);
-	    	 }
+	    	 TextView view = (TextView) SendListActivity.this.findViewById(R.id.default_send);
+	    	 view.setText(progressStr);
 	    	 
 	         Toast.makeText(SendListActivity.this, "Progress " + progress[0].toString() + "%", 
 	        		        Toast.LENGTH_SHORT).show();
@@ -151,38 +147,43 @@ public class SendListActivity extends ListActivity {
          // Called in UI thread
 	     protected void onPostExecute(Bundle result) {
 
-	    	    Log.i("GenSendListTask", "onPostExecute");
-	    	 
-	    	    //TODO: validate parms.
-	    	    //      read bundle..
-	    	 
-	    	    //TODO: why we need to do following?
-	    	    // hide the default view.
-	    	    //TextView view = (TextView) SendListActivity.this.findViewById(R.id.default_send);
-	    	    //view.setVisibility(TRIM_MEMORY_UI_HIDDEN);
-	    	 
-	    	    
-	    	    
-	            Bundle sendlist = result.getBundle(HappyNewYearActivity.SEND_LIST);
-	            Bundle data = result.getBundle(HappyNewYearActivity.SEND_LIST_PARMS);
-	            
-	            String cc = data.getString(HappyNewYearActivity.CUSTOMER_CARER);
-	            
-	            String tmpl = data.getString(HappyNewYearActivity.SMS_TEMPLATE);
-	            
-	            	            
-	            tmpl = tmpl.replaceAll("\\{FROM\\}", cc);
-	            
-	            for (String n : sendlist.keySet()) {
-	                String sms = tmpl.replaceAll("\\{TO\\}", sendlist.getString(n));
-	                Map<String, String> rec = new Hashtable<String, String>();
-	                rec.put(KEY_TO, n);
-	                rec.put(KEY_SMS, sms);
-	                smslist.add(rec);
-	                adapter.notifyDataSetChanged();
-	            }
-	            
-	            //TODO: only enable button after list is updated.
+	    	 Log.i("GenSendListTask", "onPostExecute");
+
+	    	 //TODO: validate parms.
+	    	 //      read bundle..
+	    	 Bundle sendlist = result.getBundle(HappyNewYearActivity.SEND_LIST);
+
+	    	 // hidden the default view if it is not empty.
+	    	 // 
+	    	 if (sendlist.isEmpty()) {
+
+	    		 TextView view = (TextView) SendListActivity.this.findViewById(R.id.default_send);
+	    		 view.setText(SendListActivity.this.getString(R.string.no_name));
+
+	    	 } else {
+
+	    		 TextView view = (TextView) SendListActivity.this.findViewById(R.id.default_send);
+	    		 view.setVisibility(TRIM_MEMORY_UI_HIDDEN);
+
+	    		 Bundle data = result.getBundle(HappyNewYearActivity.SEND_LIST_PARMS);
+
+	    		 String cc = data.getString(HappyNewYearActivity.CUSTOMER_CARER);
+
+	    		 String tmpl = data.getString(HappyNewYearActivity.SMS_TEMPLATE);
+
+
+	    		 tmpl = tmpl.replaceAll("\\{FROM\\}", cc);
+
+	    		 for (String n : sendlist.keySet()) {
+	    			 String sms = tmpl.replaceAll("\\{TO\\}", sendlist.getString(n));
+	    			 Map<String, String> rec = new Hashtable<String, String>();
+	    			 rec.put(KEY_TO, n);
+	    			 rec.put(KEY_SMS, sms);
+	    			 smslist.add(rec);
+	    			 adapter.notifyDataSetChanged();
+	    		 }
+	    		 //TODO: only enable button after list is updated.
+	    	 }
 	     }
 	 }
 	 
